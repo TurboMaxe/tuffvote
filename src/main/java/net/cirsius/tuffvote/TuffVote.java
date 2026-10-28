@@ -1,22 +1,23 @@
 package net.cirsius.tuffvote;
 
+import lombok.RequiredArgsConstructor;
+import net.cirsius.tuffvote.records.Config;
+import net.cirsius.tuffvote.records.Platform;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class TuffVote {
 
     private final Platform platform;
-    private List<String> commands;
-    private List<String> services;
+
+    private List<String> commands = new ArrayList<>();
+    private List<String> services = new ArrayList<>();
     private String broadcastMessage;
 
-    public TuffVote(Platform platform) {
-        this.platform = platform;
-        commands = new ArrayList<>();
-        services = new ArrayList<>();
-    }
 
     public void enable() {
         loadConfig();
@@ -26,7 +27,9 @@ public class TuffVote {
         try {
             File folder = platform.dataFolder();
             if (!folder.exists()) {
-                folder.mkdir();
+               if (!folder.mkdir()) {
+                   platform.log("could not make data folder!");
+               }
             }
 
             File configFile = new File(folder, "config.yml");
@@ -46,8 +49,6 @@ public class TuffVote {
         }
     }
 
-    public record Config(List<String> commands, List<String> services, String broadcastMessage) { }
-
     public void handleVote(String username, String serviceName) {
         if (!services.isEmpty() && services.stream().noneMatch(s -> s.equalsIgnoreCase(serviceName))) {
             return;
@@ -66,12 +67,5 @@ public class TuffVote {
         }
     }
 
-    public interface Platform {
-        File dataFolder();
-        InputStream resource(String name);
-        Config loadConfig(File configFile) throws Exception;
-        void log(String msg);
-        void broadcast(String msg);
-        void runCommand(String cmd);
-    }
+
 }

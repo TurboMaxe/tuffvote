@@ -1,6 +1,9 @@
 package net.cirsius.tuffvote.velocity;
 
 import com.google.inject.Inject;
+import com.mojang.brigadier.tree.CommandNode;
+import com.velocitypowered.api.command.CommandMeta;
+import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -12,18 +15,24 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.velocity.event.VotifierEvent;
 import net.cirsius.tuffvote.TuffVote;
+import net.cirsius.tuffvote.records.Config;
+import net.cirsius.tuffvote.records.Platform;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.md_5.bungee.api.CommandSender;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
 
 @Plugin(id = "tuffvote", name = "TuffVote", version = "${version}",
         authors = {"cirsius"}, dependencies = {@Dependency(id = "nuvotifier", optional = true)})
-public class TuffVoteVelocity implements TuffVote.Platform {
+public class TuffVoteVelocity implements Platform {
 
     private final ProxyServer server;
     private final Path dataDirectory;
@@ -41,7 +50,24 @@ public class TuffVoteVelocity implements TuffVote.Platform {
     public void onProxyInitialization(ProxyInitializeEvent event) {
         tuffVote = new TuffVote(this);
         server.getEventManager().register(this, this);
-        server.getCommandManager().register("tuffvotereload", new ReloadCommand());
+        server.getCommandManager().register(new CommandMeta() {
+            @Override
+            public Collection<String> getAliases() {
+                return List.of(
+                        "tuffvotereload"
+                );
+            }
+
+            @Override
+            public Collection<CommandNode<CommandSource>> getHints() {
+                return List.of();
+            }
+
+            @Override
+            public @Nullable Object getPlugin() {
+                return null;
+            }
+        }, new ReloadCommand());
         tuffVote.enable();
     }
 
@@ -62,10 +88,10 @@ public class TuffVoteVelocity implements TuffVote.Platform {
     }
 
     @Override
-    public TuffVote.Config loadConfig(File configFile) throws Exception {
+    public Config loadConfig(File configFile) throws Exception {
         YamlConfigurationLoader loader = YamlConfigurationLoader.builder().path(configFile.toPath()).build();
         ConfigurationNode config = loader.load();
-        return new TuffVote.Config(
+        return new Config(
                 config.node("commands").getList(String.class),
                 config.node("services").getList(String.class),
                 config.node("broadcast_message").getString("")
@@ -80,10 +106,9 @@ public class TuffVoteVelocity implements TuffVote.Platform {
     @Override
     public void broadcast(String msg) {
         Component message = LegacyComponentSerializer.legacyAmpersand().deserialize(msg);
-
-        for (Player player : server.getAllPlayers()) {
-            player.sendMessage(message);
-        }
+        server.getAllPlayers().forEach(
+                player -> player.sendMessage(message)
+        );
         server.getConsoleCommandSource().sendMessage(message);
     }
 
@@ -96,8 +121,7 @@ public class TuffVoteVelocity implements TuffVote.Platform {
 
         @Override
         public void execute(Invocation invocation) {
-            tuffVote.loadConfig();
-            invocation.source().sendMessage(Component.text("config reloaded"));
+            net.cirsius.tuffvote.command.ReloadCommand.cmd().accept(tuffVote, invocation);
         }
     }
 }

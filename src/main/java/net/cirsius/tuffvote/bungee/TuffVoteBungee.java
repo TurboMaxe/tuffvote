@@ -3,6 +3,9 @@ package net.cirsius.tuffvote.bungee;
 import com.vexsoftware.votifier.bungee.events.VotifierEvent;
 import com.vexsoftware.votifier.model.Vote;
 import net.cirsius.tuffvote.TuffVote;
+import net.cirsius.tuffvote.command.ReloadCommand;
+import net.cirsius.tuffvote.records.Config;
+import net.cirsius.tuffvote.records.Platform;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -18,7 +21,7 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.File;
 import java.io.InputStream;
 
-public class TuffVoteBungee extends Plugin implements Listener, TuffVote.Platform {
+public class TuffVoteBungee extends Plugin implements Listener, Platform {
 
     private TuffVote tuffVote;
 
@@ -47,9 +50,9 @@ public class TuffVoteBungee extends Plugin implements Listener, TuffVote.Platfor
     }
 
     @Override
-    public TuffVote.Config loadConfig(File configFile) throws Exception {
+    public Config loadConfig(File configFile) throws Exception {
         Configuration config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
-        return new TuffVote.Config(
+        return new Config(
                 config.getStringList("commands"),
                 config.getStringList("services"),
                 config.getString("broadcast_message", "")
@@ -85,8 +88,7 @@ public class TuffVoteBungee extends Plugin implements Listener, TuffVote.Platfor
 
         @Override
         public void execute(CommandSender sender, String[] args) {
-            tuffVote.loadConfig();
-            sender.sendMessage("config reloaded");
+            net.cirsius.tuffvote.command.ReloadCommand.cmd().accept(tuffVote, sender);
         }
     }
 }
