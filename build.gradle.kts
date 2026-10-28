@@ -19,6 +19,9 @@ dependencies {
     compileOnly("com.github.nuvotifier.NuVotifier:nuvotifier-api:2.7.3")
     compileOnly("com.github.nuvotifier.NuVotifier:nuvotifier-bungeecord:2.7.3")
     compileOnly("com.github.nuvotifier.NuVotifier:nuvotifier-velocity:2.7.3")
+
+    compileOnly("org.projectlombok:lombok:1.18.34")
+    annotationProcessor("org.projectlombok:lombok:1.18.34")
 }
 
 java {
