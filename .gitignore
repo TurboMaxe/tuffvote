@@ -102,7 +102,10 @@ $RECYCLE.BIN/
 
 .gradle
 build/
+<<<<<<< HEAD
 target/
+=======
+>>>>>>> 29afb8dc25197d5c68a3d947f44a77bb27051b9b
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -120,3 +123,8 @@ run/
 
 # libs
 !libs/**
+runs/
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+/bin
+
