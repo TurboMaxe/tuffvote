@@ -13,6 +13,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
 import net.cirsius.tuffvote.config.Config;
+import net.cirsius.tuffvote.listener.VoteListener;
 import net.cirsius.tuffvote.types.TuffVotePlatform;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -44,7 +45,7 @@ public final class TuffVotePaper implements TuffVotePlatform {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        server.getEventManager().register(this, this);
+        server.getEventManager().register(this, new VoteListener());
         server.getCommandManager().register(new CommandMeta() {
             @Override
             public Collection<String> getAliases() {
