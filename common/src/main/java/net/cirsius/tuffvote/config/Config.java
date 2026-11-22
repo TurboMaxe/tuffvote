@@ -8,7 +8,8 @@ import de.exlll.configlib.YamlConfigurations;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import net.cirsius.tuffvote.PaperTuffVote;
+import lombok.Setter;
+import net.cirsius.tuffvote.types.TuffVotePlatform;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,7 @@ import java.util.List;
 @SuppressWarnings("FieldMayBeFinal")
 public class Config {
     private static Config instance;
+    @Setter private static TuffVotePlatform plugin;
 
     private static final String CONFIG_HEADER = """
             #########################################
@@ -37,17 +39,17 @@ public class Config {
 
     @Comment("The message that should be broadcasted after a player has voted.")
     private String broadcastMessage = "%player% voted!";
-    
+
     @Comment("A list of service names the vote service should broadcast in the broadcast message.")
     private List<String> services = List.of();
 
 
     public void save() {
-        YamlConfigurations.save(new File(PaperTuffVote.getInstance().dataFolder(), "config.yml").toPath(), Config.class, this);
+        YamlConfigurations.save(new File(plugin.dataFolder(), "config.yml").toPath(), Config.class, this);
     }
 
     public static void reload() {
-        instance = YamlConfigurations.load(new File(PaperTuffVote.getInstance().dataFolder(), "config.yml").toPath(), Config.class, PROPERTIES);
+        instance = YamlConfigurations.load(new File(plugin.dataFolder(), "config.yml").toPath(), Config.class, PROPERTIES);
     }
 
     public static Config i() {
@@ -55,7 +57,6 @@ public class Config {
             return instance;
         }
 
-        return instance = YamlConfigurations.update(new File(PaperTuffVote.getInstance().dataFolder(), "config.yml").toPath(), Config.class, PROPERTIES);
+        return instance = YamlConfigurations.update(new File(plugin.dataFolder(), "config.yml").toPath(), Config.class, PROPERTIES);
     }
 }
-

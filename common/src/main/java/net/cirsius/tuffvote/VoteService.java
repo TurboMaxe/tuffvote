@@ -1,12 +1,11 @@
 package net.cirsius.tuffvote;
 
 import lombok.RequiredArgsConstructor;
-import net.cirsius.tuffvote.models.BaseConfig;
-import net.cirsius.tuffvote.models.Platform;
+import net.cirsius.tuffvote.types.BaseConfig;
+import net.cirsius.tuffvote.types.TuffVotePlatform;
 import net.cirsius.tuffvote.util.Text;
 import net.cirsius.tuffvote.util.Tuple;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -16,7 +15,7 @@ public class VoteService {
         final List<String> services = config.serviceNames();
         final List<String> commands = config.commandAliases();
         final String broadcastMessage = config.broadcastMessage();
-        final Platform platform = config.platform();
+        final TuffVotePlatform tuffVotePlatform = config.tuffVotePlatform();
 
         if (services.stream().noneMatch(s -> s.equalsIgnoreCase(serviceName))) {
             return;
@@ -26,12 +25,12 @@ public class VoteService {
             String message = Text.format(broadcastMessage,
                        Tuple.of("%player%", username),
                              Tuple.of("%service%", serviceName));
-            platform.broadcast(message);
+            tuffVotePlatform.broadcast(message);
         }
 
         for (String command : commands) {
             String processedCommand = Text.format(command, Tuple.of("%player%", username));
-            platform.runCommand(processedCommand);
+            tuffVotePlatform.runCommand(processedCommand);
         }
     }
 }

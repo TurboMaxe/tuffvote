@@ -1,9 +1,11 @@
-package net.cirsius.tuffvote.models;
+package net.cirsius.tuffvote.types;
+
+import net.cirsius.tuffvote.VoteService;
 
 import java.io.File;
 import java.io.InputStream;
 
-public interface Platform {
+public interface TuffVotePlatform {
 
     public abstract File dataFolder();
 
@@ -14,5 +16,9 @@ public interface Platform {
     public abstract void broadcast(String msg);
 
     public abstract void runCommand(String cmd);
+
+    public default VoteService service() {
+        return new VoteService();
+    }
 
 }

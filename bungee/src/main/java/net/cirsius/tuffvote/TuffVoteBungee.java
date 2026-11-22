@@ -3,7 +3,7 @@ package net.cirsius.tuffvote;
 import lombok.Getter;
 import net.cirsius.tuffvote.config.Config;
 import net.cirsius.tuffvote.listener.VoteListener;
-import net.cirsius.tuffvote.models.Platform;
+import net.cirsius.tuffvote.types.TuffVotePlatform;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -14,7 +14,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import java.io.File;
 import java.io.InputStream;
 
-public class TuffVoteBungee extends Plugin implements Platform {
+public class TuffVoteBungee extends Plugin implements TuffVotePlatform {
 
     @Getter private static TuffVoteBungee instance;
 

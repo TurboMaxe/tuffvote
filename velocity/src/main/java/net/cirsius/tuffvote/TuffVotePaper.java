@@ -11,12 +11,9 @@ import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
-import com.vexsoftware.votifier.model.Vote;
-import com.vexsoftware.votifier.velocity.event.VotifierEvent;
 import lombok.Getter;
 import net.cirsius.tuffvote.config.Config;
-import net.cirsius.tuffvote.models.BaseConfig;
-import net.cirsius.tuffvote.models.Platform;
+import net.cirsius.tuffvote.types.TuffVotePlatform;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -27,20 +24,18 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 @Plugin(id = "tuffvote", name = "TuffVote", version = "${version}",
         authors = {"cirsius"}, dependencies = {@Dependency(id = "nuvotifier", optional = true)})
-public class PaperTuffVote implements Platform {
+public final class TuffVotePaper implements TuffVotePlatform {
 
-    @Getter private static PaperTuffVote instance;
+    @Getter private static TuffVotePaper instance;
     private final ProxyServer server;
     private final Path dataDirectory;
     private final Logger logger;
-    private VoteService service;
 
     @Inject
-    public PaperTuffVote(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
+    public TuffVotePaper(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
         this.logger = logger;
         this.dataDirectory = dataDirectory;
@@ -68,17 +63,6 @@ public class PaperTuffVote implements Platform {
                 return null;
             }
         }, new ReloadCommand());
-    }
-
-    @Subscribe
-    public void onVote(VotifierEvent event) {
-        Vote vote = event.getVote();
-        service.handleVote(new BaseConfig(
-                           Config.i().getServices(),
-                           Config.i().getCommands(),
-                           Config.i().getBroadcastMessage(),
-                           this
-        ),  vote.getUsername(), vote.getServiceName());
     }
 
     @Override
@@ -113,12 +97,12 @@ public class PaperTuffVote implements Platform {
     private class ReloadCommand implements SimpleCommand {
 
         @Override
-        public void execute(Invocation invocation) {   
+        public void execute(Invocation invocation) {
             if (invocation instanceof CommandSource source) {
                 source.sendRichMessage("<yellow> config reloaded </yellow>");
             }
-            Config.i().reload();    
+            Config.i().reload();
         }
     }
-        
+
 }

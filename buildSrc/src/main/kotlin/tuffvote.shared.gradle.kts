@@ -18,6 +18,7 @@ dependencies {
     compileOnly("net.md-5:bungeecord-api:1.21-R0.2")
     compileOnly("org.jetbrains:annotations:26.0.2")
     annotationProcessor("org.jetbrains:annotations:26.0.2")
+    implementation("de.exlll:configlib-yaml:4.8.1")
 }
 
 tasks {
