@@ -1,5 +1,0 @@
-name: tuffvote
-version: '${version}'
-main: net.cirsius.tuffvote.bungee.TuffVoteBungee
-author: cirsius
-description: exes commands when a vote comes from esl
