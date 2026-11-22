@@ -1,0 +1,23 @@
+[versions]
+
+shared-votifier = "2.7.3"
+
+common-configlib = "4.6.1"
+
+
+platform-velocity = "3.4.0"
+platform-bungee = "1.21-R0.4"
+
+[libraries]
+
+common-configlib = { group = "de.exlll", name = "configlib-yaml", version.ref = "common-configlib" }
+velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "platform-velocity" }
+bungeecord = { group = "net.md-5", name = "bungeecord-api", version.ref = "platform-bungee" }
+
+votifier-paper = { group = "com.github.nuvotifier.NuVotifier", name = "nuvotifier-velocity", version.ref = "shared-votifier" }
+votifier-bungee = { group = "com.github.nuvotifier.NuVotifier", name = "nuvotifier-bungeecord", version.ref = "shared-votifier" }
+votifier-api = { group = "com.github.nuvotifier.NuVotifier", name = "nuvotifier-api", version.ref = "shared-votifier" }
+
+[plugins]
+
+shadow = { id = "com.gradleup.shadow", version = "9.0.0-beta12" }
